@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
-import config from "../configs/config.json";
-import sandboxConfig from "../configs/Sandbox.json";
-import { Linking } from "react-native";
+import axios, {AxiosResponse} from 'axios';
+import config from '../configs/config.json';
+import sandboxConfig from '../configs/Sandbox.json';
+import {Linking} from 'react-native';
 
 interface BodyData {
   Data: {
@@ -24,7 +24,12 @@ class SanboxApiClient {
   private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
   private permissions: string[] = [];
 
-  constructor(baseUrl: string, clientId: string, clientSecret: string, commonHeaders: any) {
+  constructor(
+    baseUrl: string,
+    clientId: string,
+    clientSecret: string,
+    commonHeaders: any,
+  ) {
     this.baseUrl = baseUrl;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
@@ -41,7 +46,7 @@ class SanboxApiClient {
         client_secret: this.clientSecret,
         scope: sandboxConfig.scope,
       };
-      const headers = { ...this.commonHeaders };
+      const headers = {...this.commonHeaders};
 
       const response: AxiosResponse<ResponseData> = await axios.post(
         `${this.baseUrl}/${sandboxConfig.tokenEndpoint}`,
@@ -49,7 +54,7 @@ class SanboxApiClient {
         {
           headers: headers,
           params: body,
-        }
+        },
       );
 
       return this.accountRequest(response.data.access_token);
@@ -68,7 +73,7 @@ class SanboxApiClient {
       };
       const headers = {
         ...this.commonHeaders,
-        Authorization: "Bearer " + accessToken,
+        Authorization: 'Bearer ' + accessToken,
       };
 
       const response: AxiosResponse<ResponseData> = await axios.post(
@@ -76,10 +81,10 @@ class SanboxApiClient {
         body,
         {
           headers: headers,
-        }
+        },
       );
 
-      return this.userConsent(response.data.Data?.ConsentId || "");
+      return this.userConsent(response.data.Data?.ConsentId || '');
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -98,7 +103,7 @@ class SanboxApiClient {
       //   console.error("Cannot open the link");
       // }
     } catch (error) {
-      console.error("Error opening the link:", error);
+      console.error('Error opening the link:', error);
     }
 
     return consentUrlWithVariables;
@@ -110,11 +115,11 @@ class SanboxApiClient {
         client_id: this.clientId,
         client_secret: this.clientSecret,
         redirect_uri: sandboxConfig.redirectUri,
-        grant_type: "authorization_code",
+        grant_type: 'authorization_code',
         code: authToken,
       };
       const headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
       };
 
       const response: AxiosResponse<ResponseData> = await axios.post(
@@ -123,10 +128,10 @@ class SanboxApiClient {
         {
           headers: headers,
           params: body,
-        }
+        },
       );
 
-      console.log("Api access token", response.data.access_token);
+      console.log('Api access token', response.data.access_token);
 
       return this.fetchAccounts(response.data.access_token);
     } catch (error) {
@@ -145,7 +150,7 @@ class SanboxApiClient {
         `${this.baseUrl}/${sandboxConfig.accountsEndpoint}`,
         {
           headers: headers,
-        }
+        },
       );
 
       return accountResponse.data.Data;

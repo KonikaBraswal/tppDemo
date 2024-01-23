@@ -1,10 +1,10 @@
 // ApiFactory.ts
-import axios from "axios";
-import config from "../configs/config.json";
-import sandboxConfig from "../configs/Sandbox.json";
-import { Linking } from "react-native";
-import { TextInput, Button, View, Text } from "react-native";
-import SanboxApiClient from "./SanboxApiClient";
+import axios from 'axios';
+import config from '../configs/config.json';
+import sandboxConfig from '../configs/Sandbox.json';
+import {Linking} from 'react-native';
+import {TextInput, Button, View, Text} from 'react-native';
+import SanboxApiClient from './SanboxApiClient';
 //import RestApiClient from "./RestApiClient"; // Import the missing RestApiClient
 
 let permissions: string[] = [];
@@ -24,27 +24,27 @@ class ApiFactory {
 
   createApiClient(type: string) {
     switch (type) {
-      case "sandbox":
+      case 'sandbox':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,
-          this.commonHeaders
+          this.commonHeaders,
         );
       // Add other cases if needed
-      case "local":
+      case 'local':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,
-          this.commonHeaders // Assuming RestApiClient uses commonHeaders, adjust accordingly
+          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
         );
-      case "sit":
+      case 'sit':
         return new SanboxApiClient(
           this.baseUrl,
           this.clientId,
           this.clientSecret,
-          this.commonHeaders // Assuming RestApiClient uses commonHeaders, adjust accordingly
+          this.commonHeaders, // Assuming RestApiClient uses commonHeaders, adjust accordingly
         );
       default:
         throw new Error(`Invalid API client type: ${type}`);

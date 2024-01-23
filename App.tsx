@@ -84,21 +84,28 @@ function App(): React.JSX.Element {
 
 export default App;
 
-
-// // App.tsx
-// import React, { useState } from 'react';
-// import { View, Text, TouchableOpacity, Modal, TextInput, Button, ActivityIndicator } from 'react-native';
+// App.tsx -------------------------------------KONIKA---------------------------------
+// import React, {useState} from 'react';
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   Modal,
+//   TextInput,
+//   Button,
+//   ActivityIndicator,
+// } from 'react-native';
 // import ApiFactory from './ApiFactory/ApiFactory';
 // import AccountInfo from './ApiFactory/AccountInfo';
 
 // const App: React.FC = () => {
 //   const apiFactory = new ApiFactory();
 //   const permissions: string[] = [
-//     "ReadAccountsDetail",
-//     "ReadBalances",
-//     "ReadTransactionsCredits",
-//     "ReadTransactionsDebits",
-//     "ReadTransactionsDetail",
+//     'ReadAccountsDetail',
+//     'ReadBalances',
+//     'ReadTransactionsCredits',
+//     'ReadTransactionsDebits',
+//     'ReadTransactionsDetail',
 //   ];
 
 //   const [isModalVisible, setModalVisible] = useState<boolean>(false);
@@ -151,7 +158,7 @@ export default App;
 //   };
 
 //   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
 //       <Text>Fetch Balance</Text>
 //       <TouchableOpacity onPress={handleButtonClick}>
 //         <View
@@ -160,9 +167,8 @@ export default App;
 //             padding: 10,
 //             borderRadius: 5,
 //             marginTop: 10,
-//           }}
-//         >
-//           <Text style={{ color: 'white' }}>Click me</Text>
+//           }}>
+//           <Text style={{color: 'white'}}>Click me</Text>
 //         </View>
 //       </TouchableOpacity>
 
@@ -170,14 +176,19 @@ export default App;
 //         animationType="slide"
 //         transparent={true}
 //         visible={isModalVisible}
-//         onRequestClose={() => setModalVisible(false)}
-//       >
-//         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//           <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+//         onRequestClose={() => setModalVisible(false)}>
+//         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+//           <View
+//             style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
 //             <Text>Enter auth code</Text>
 //             <TextInput
-//               style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10 }}
-//               onChangeText={(text) => setUserInput(text)}
+//               style={{
+//                 height: 40,
+//                 borderColor: 'gray',
+//                 borderWidth: 1,
+//                 marginBottom: 10,
+//               }}
+//               onChangeText={text => setUserInput(text)}
 //               value={userInput}
 //             />
 //             <Button title="Submit" onPress={handleSubmit} />
@@ -186,7 +197,7 @@ export default App;
 //       </Modal>
 
 //       {loading && <ActivityIndicator size="large" color="blue" />}
-//       {error && <Text style={{ color: 'red' }}>{error}</Text>}
+//       {error && <Text style={{color: 'red'}}>{error}</Text>}
 
 //       {/* Use the AccountInfo component to display account data */}
 //       <AccountInfo accountData={accountData} />
@@ -195,23 +206,3 @@ export default App;
 // };
 
 // export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
