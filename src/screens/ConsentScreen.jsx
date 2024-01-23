@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Title, Text, List, Checkbox, Icon, Button} from 'react-native-paper';
+import { Title, Text, List, Checkbox, Icon, Button, Modal, Portal, TextInput } from 'react-native-paper';
+import ApiFactory from '../../ApiFactory/ApiFactory';
 import {
   StyleSheet,
   View,
@@ -9,12 +10,17 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
-
+const mode='sandbox';
 const screenWidth = Dimensions.get('window').width;
+
 
 const ConsentScreen = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [userInput, setUserInput] = useState('');
 
+  const [error, setError] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
   const [expanded1, setExpanded1] = useState(false);
   const [expanded2, setExpanded2] = useState(false);
   const [expanded3, setExpanded3] = useState(false);
@@ -89,8 +95,63 @@ const ConsentScreen = () => {
       checked7
     );
   };
-  const handleConfirmButtonClick = () => {
+  const handleConfirmButtonClick = async() => {
+    const apiFactory=new ApiFactory();
+    if(mode=='sandbox'){
+      try {
+
+
+        const permissions = [
+          "ReadAccountsDetail",
+          "ReadBalances",
+          "ReadTransactionsCredits",
+          "ReadTransactionsDebits",
+          "ReadTransactionsDetail",
+        ];
+
+        setLoading(true);
+        setError(null);
+
+        const sandboxApiClient=apiFactory.createApiClient('sandbox');
+        
+        const data = await sandboxApiClient.retrieveAccessToken(permissions);
+        console.log('Sandbox API 1 Data:', data);
+    
+        // Show modal to get user input
+        setModalVisible(true);
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to retrieve access token.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    else{
     navigation.navigate('Accounts');
+  }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      console.log("handle submit working");
+      const apiFactory = new ApiFactory();
+      const sandboxApiClient = apiFactory.createApiClient('sandbox');
+
+      const start = userInput.indexOf('=') + 1;
+      const end = userInput.indexOf('&');
+      const authToken = userInput.slice(start, end);
+
+      setLoading(true);
+      setError(null);
+      const account = await sandboxApiClient.exchangeAccessToken(authToken);
+      setAccountData(account);
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error:', error.message);
+      setError('Failed to exchange access token or retrieve account information.');
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
