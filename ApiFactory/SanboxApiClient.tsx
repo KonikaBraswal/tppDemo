@@ -1,8 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
-import {Linking} from 'react-native';
-
+import {Linking,Alert} from 'react-native';
+import { WebView } from 'react-native-webview';
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -84,33 +84,30 @@ class SanboxApiClient {
         },
       );
 
-      return this.userConsent(response.data.Data?.ConsentId || '');
+      return this.userConsentProgammatically(response.data.Data?.ConsentId || '');
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
 
-  async userConsent(consentId: string): Promise<string> {
-    let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
-    console.log(consentUrlWithVariables);
-
+  async userConsentProgammatically(consentId: string): Promise<string> {
     try {
-      await Linking.openURL(consentUrlWithVariables);
-
-      // if (supported) {
-      //   await Linking.openURL(consentUrlWithVariables);
-      // } else {
-      //   console.error("Cannot open the link");
-      // }
+      console.log("ConsentID:",consentId);
+      const accountResponse: AxiosResponse<any> = await axios.get(
+        `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
+      );
+      return this.exchangeAccessToken(accountResponse.data.redirectUri);
     } catch (error) {
-      console.error('Error opening the link:', error);
+      throw new Error(`Failed to fetch data for accounts: ${error}`);
     }
-
-    return consentUrlWithVariables;
   }
 
-  async exchangeAccessToken(authToken: string): Promise<string> {
+  async exchangeAccessToken(authTokenUrl: string): Promise<string> {
     try {
+      const start = authTokenUrl.indexOf('=') + 1;
+      const end = authTokenUrl.indexOf('&');
+      const authToken = authTokenUrl.slice(start, end);
+      console.log("AuthToken",authToken);
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
