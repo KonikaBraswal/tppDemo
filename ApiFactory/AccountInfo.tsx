@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import {View, Text} from 'react-native';
 
 interface AccountData {
   Account: {
@@ -14,7 +14,7 @@ interface AccountInfoProps {
   accountData: AccountData | null;
 }
 
-const AccountInfo: React.FC<AccountInfoProps> = ({ accountData }) => {
+const AccountInfo: React.FC<AccountInfoProps> = ({accountData}) => {
   if (!accountData) {
     return null;
   }
