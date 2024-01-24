@@ -121,11 +121,8 @@ const ConsentScreen = () => {
 
         const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
-        const data = await sandboxApiClient.retrieveAccessToken(permissions);
+        const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
         console.log('Sandbox API 1 Data:', data);
-
-        // Show modal to get user input
-        setModalVisible(true);
       } catch (error) {
         console.error('Error:', error);
         setError('Failed to retrieve access token.');
@@ -137,30 +134,6 @@ const ConsentScreen = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-      console.log('handle submit working');
-      const apiFactory = new ApiFactory();
-      const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
-      const start = userInput.indexOf('=') + 1;
-      const end = userInput.indexOf('&');
-      const authToken = userInput.slice(start, end);
-
-      setLoading(true);
-      setError(null);
-      const account = await sandboxApiClient.exchangeAccessToken(authToken);
-      setAccountData(account);
-      setModalVisible(false);
-    } catch (error) {
-      console.error('Error:', error.message);
-      setError(
-        'Failed to exchange access token or retrieve account information.',
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
   return (
     <ScrollView style={{flex: 1, backgroundColor: 'white'}}>
       <View style={styles.container}>
