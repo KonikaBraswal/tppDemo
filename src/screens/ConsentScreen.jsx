@@ -1,5 +1,15 @@
 import React, {useState} from 'react';
-import { Title, Text, List, Checkbox, Icon, Button, Modal, Portal, TextInput } from 'react-native-paper';
+import {
+  Title,
+  Text,
+  List,
+  Checkbox,
+  Icon,
+  Button,
+  Modal,
+  Portal,
+  TextInput,
+} from 'react-native-paper';
 import ApiFactory from '../../ApiFactory/ApiFactory';
 import {
   StyleSheet,
@@ -10,9 +20,8 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
-const mode='sandbox';
+const mode = 'sandbox';
 const screenWidth = Dimensions.get('window').width;
-
 
 const ConsentScreen = () => {
   const navigation = useNavigation();
@@ -95,28 +104,26 @@ const ConsentScreen = () => {
       checked7
     );
   };
-  const handleConfirmButtonClick = async() => {
-    const apiFactory=new ApiFactory();
-    if(mode=='sandbox'){
+  const handleConfirmButtonClick = async () => {
+    const apiFactory = new ApiFactory();
+    if (mode == 'sandbox') {
       try {
-
-
         const permissions = [
-          "ReadAccountsDetail",
-          "ReadBalances",
-          "ReadTransactionsCredits",
-          "ReadTransactionsDebits",
-          "ReadTransactionsDetail",
+          'ReadAccountsDetail',
+          'ReadBalances',
+          'ReadTransactionsCredits',
+          'ReadTransactionsDebits',
+          'ReadTransactionsDetail',
         ];
 
         setLoading(true);
         setError(null);
 
-        const sandboxApiClient=apiFactory.createApiClient('sandbox');
-        
+        const sandboxApiClient = apiFactory.createApiClient('sandbox');
+
         const data = await sandboxApiClient.retrieveAccessToken(permissions);
         console.log('Sandbox API 1 Data:', data);
-    
+
         // Show modal to get user input
         setModalVisible(true);
       } catch (error) {
@@ -125,15 +132,14 @@ const ConsentScreen = () => {
       } finally {
         setLoading(false);
       }
+    } else {
+      navigation.navigate('Accounts');
     }
-    else{
-    navigation.navigate('Accounts');
-  }
   };
 
   const handleSubmit = async () => {
     try {
-      console.log("handle submit working");
+      console.log('handle submit working');
       const apiFactory = new ApiFactory();
       const sandboxApiClient = apiFactory.createApiClient('sandbox');
 
@@ -148,7 +154,9 @@ const ConsentScreen = () => {
       setModalVisible(false);
     } catch (error) {
       console.error('Error:', error.message);
-      setError('Failed to exchange access token or retrieve account information.');
+      setError(
+        'Failed to exchange access token or retrieve account information.',
+      );
     } finally {
       setLoading(false);
     }
