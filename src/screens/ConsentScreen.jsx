@@ -27,7 +27,6 @@ const ConsentScreen = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState('');
-
   const [error, setError] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [expanded1, setExpanded1] = useState(false);
@@ -123,6 +122,7 @@ const ConsentScreen = () => {
 
         const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
         console.log('Sandbox API 1 Data:', data);
+        navigation.navigate('Accounts', {accountData: data});
       } catch (error) {
         console.error('Error:', error);
         setError('Failed to retrieve access token.');

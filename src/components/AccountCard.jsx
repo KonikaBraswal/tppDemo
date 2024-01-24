@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Card, Title, Text, Divider} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
 
 const AccountCard = ({account}) => {
   const navigation = useNavigation();
@@ -10,16 +9,6 @@ const AccountCard = ({account}) => {
   const handleCardClick = () => {
     navigation.navigate('Transactions');
   };
-
-  useEffect(() => {
-    axios
-      .get('http://192.168.1.7:3001/Data')
-      .then(response => {
-        setBalances(response.data);
-        //console.log(balances);
-      })
-      .catch(error => console.error('Error in fetching balance data:', error));
-  }, []);
 
   return (
     <Card style={styles.card} onPress={handleCardClick}>
