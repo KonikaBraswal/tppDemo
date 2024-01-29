@@ -7,6 +7,7 @@ import {
   Icon,
   Button,
   Modal,
+  Dialog,
   Portal,
   TextInput,
 } from 'react-native-paper';
@@ -92,6 +93,17 @@ const ConsentScreen = () => {
   const showErrorDialog = () => setErrorDialogVisible(true);
   const hideErrorDialog = () => setErrorDialogVisible(false);
 
+  const [isInputDialogVisible, setInputDialogVisible] = useState(false);
+  const showInputDialog = () => setInputDialogVisible(true);
+  const hideInputDialog = () => setInputDialogVisible(false);
+
+  const [inputValue, setInputValue] = useState('');
+
+  const handleSubmit = () => {
+    console.log('Submitted:', inputValue);
+    hideInputDialog();
+  };
+
   const areAllCheckboxesChecked = () => {
     return (
       checked1 &&
@@ -104,34 +116,32 @@ const ConsentScreen = () => {
     );
   };
   const handleConfirmButtonClick = async () => {
-    const apiFactory = new ApiFactory();
-    if (mode == 'sandbox') {
-      try {
-        const permissions = [
-          'ReadAccountsDetail',
-          'ReadBalances',
-          'ReadTransactionsCredits',
-          'ReadTransactionsDebits',
-          'ReadTransactionsDetail',
-        ];
-
-        setLoading(true);
-        setError(null);
-
-        const sandboxApiClient = apiFactory.createApiClient('sandbox');
-
-        const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
-        console.log('Sandbox API 1 Data:', data);
-        navigation.navigate('Accounts', {accountData: data});
-      } catch (error) {
-        console.error('Error:', error);
-        setError('Failed to retrieve access token.');
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      navigation.navigate('Accounts');
-    }
+    // const apiFactory = new ApiFactory();
+    // if (mode == 'sandbox') {
+    //   try {
+    //     const permissions = [
+    //       'ReadAccountsDetail',
+    //       'ReadBalances',
+    //       'ReadTransactionsCredits',
+    //       'ReadTransactionsDebits',
+    //       'ReadTransactionsDetail',
+    //     ];
+    //     setLoading(true);
+    //     setError(null);
+    //     const sandboxApiClient = apiFactory.createApiClient('sandbox');
+    //     const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+    //     console.log('Sandbox API 1 Data:', data);
+    //     navigation.navigate('Accounts', {accountData: data});
+    //   } catch (error) {
+    //     console.error('Error:', error);
+    //     setError('Failed to retrieve access token.');
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // } else {
+    //   navigation.navigate('Accounts');
+    // }
+    showInputDialog();
   };
 
   return (
@@ -368,7 +378,6 @@ const ConsentScreen = () => {
             onPress={() => navigation.goBack()}>
             Deny
           </Button>
-
           <Button
             icon="check-bold"
             mode="contained"
@@ -390,6 +399,22 @@ const ConsentScreen = () => {
               text={''}
             />
           )}
+          <Portal>
+            <Dialog visible={isInputDialogVisible} onDismiss={hideInputDialog}>
+              <Dialog.Title>Redirect Input</Dialog.Title>
+              <Dialog.Content>
+                <TextInput
+                  label=" Paste URL from the browser"
+                  value={inputValue}
+                  onChangeText={text => setInputValue(text)}
+                />
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={hideInputDialog}>Cancel</Button>
+                <Button onPress={handleSubmit}>Submit</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
         </View>
       </View>
     </ScrollView>

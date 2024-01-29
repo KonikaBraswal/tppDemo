@@ -1,8 +1,8 @@
 import axios, {AxiosResponse} from 'axios';
 import config from '../configs/config.json';
 import sandboxConfig from '../configs/Sandbox.json';
-import {Linking,Alert} from 'react-native';
-import { WebView } from 'react-native-webview';
+import {Linking, Alert} from 'react-native';
+import {WebView} from 'react-native-webview';
 interface BodyData {
   Data: {
     Permissions: string[];
@@ -84,7 +84,9 @@ class SanboxApiClient {
         },
       );
 
-      return this.userConsentProgammatically(response.data.Data?.ConsentId || '');
+      return this.userConsentProgammatically(
+        response.data.Data?.ConsentId || '',
+      );
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
@@ -92,7 +94,7 @@ class SanboxApiClient {
 
   async userConsentProgammatically(consentId: string): Promise<string> {
     try {
-      console.log("ConsentID:",consentId);
+      console.log('ConsentID:', consentId);
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,
       );
@@ -107,7 +109,7 @@ class SanboxApiClient {
       const start = authTokenUrl.indexOf('=') + 1;
       const end = authTokenUrl.indexOf('&');
       const authToken = authTokenUrl.slice(start, end);
-      console.log("AuthToken",authToken);
+      console.log('AuthToken', authToken);
       const body: Record<string, string> = {
         client_id: this.clientId,
         client_secret: this.clientSecret,
