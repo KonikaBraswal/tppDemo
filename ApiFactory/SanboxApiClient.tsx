@@ -17,13 +17,14 @@ interface ResponseData {
   };
 }
 
+
 class SanboxApiClient {
   private baseUrl: string;
   private clientId: string;
   private clientSecret: string;
   private commonHeaders: any; // Replace 'any' with the actual type of commonHeaders
   private permissions: string[] = [];
-
+  private consentType:string='';
   constructor(
     baseUrl: string,
     clientId: string,
@@ -35,10 +36,9 @@ class SanboxApiClient {
     this.clientSecret = clientSecret;
     this.commonHeaders = commonHeaders;
   }
-
+  
   async retrieveAccessToken(permission: string[]): Promise<string> {
     this.permissions = permission;
-
     try {
       const body: Record<string, string> = {
         grant_type: sandboxConfig.grant_type,
@@ -56,7 +56,7 @@ class SanboxApiClient {
           params: body,
         },
       );
-
+      console.log("Access token",response.data.access_token);
       return this.accountRequest(response.data.access_token);
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
@@ -83,17 +83,23 @@ class SanboxApiClient {
           headers: headers,
         },
       );
-
-      return this.userConsentProgammatically(
-        response.data.Data?.ConsentId || '',
-      );
+      return("consent");
     } catch (error) {
       throw new Error(`Failed to fetch data: ${error}`);
     }
   }
 
+  async manualUserConsent(consentId:string):Promise<string>{
+    console.log("manual consent");
+    let consentUrlWithVariables = `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&request=${consentId}`;
+      console.log(consentUrlWithVariables);
+      
+    return this.exchangeAccessToken("jsdb");
+
+  }
   async userConsentProgammatically(consentId: string): Promise<string> {
     try {
+    
       console.log('ConsentID:', consentId);
       const accountResponse: AxiosResponse<any> = await axios.get(
         `${sandboxConfig.consentUrl}?client_id=${config.clientId}&response_type=code id_token&scope=openid accounts&redirect_uri=${sandboxConfig.redirectUri}&state=ABC&request=${consentId}&authorization_mode=AUTO_POSTMAN&authorization_username=${sandboxConfig.psu}`,

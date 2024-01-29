@@ -22,6 +22,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import IconDialog from '../components/IconDialog';
 const mode = 'sandbox';
+const way='web';
 const screenWidth = Dimensions.get('window').width;
 
 const ConsentScreen = () => {
@@ -99,10 +100,7 @@ const ConsentScreen = () => {
 
   const [inputValue, setInputValue] = useState('');
 
-  const handleSubmit = () => {
-    console.log('Submitted:', inputValue);
-    hideInputDialog();
-  };
+  
 
   const areAllCheckboxesChecked = () => {
     return (
@@ -116,32 +114,55 @@ const ConsentScreen = () => {
     );
   };
   const handleConfirmButtonClick = async () => {
-    // const apiFactory = new ApiFactory();
-    // if (mode == 'sandbox') {
-    //   try {
-    //     const permissions = [
-    //       'ReadAccountsDetail',
-    //       'ReadBalances',
-    //       'ReadTransactionsCredits',
-    //       'ReadTransactionsDebits',
-    //       'ReadTransactionsDetail',
-    //     ];
-    //     setLoading(true);
-    //     setError(null);
-    //     const sandboxApiClient = apiFactory.createApiClient('sandbox');
-    //     const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
-    //     console.log('Sandbox API 1 Data:', data);
-    //     navigation.navigate('Accounts', {accountData: data});
-    //   } catch (error) {
-    //     console.error('Error:', error);
-    //     setError('Failed to retrieve access token.');
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // } else {
-    //   navigation.navigate('Accounts');
-    // }
-    showInputDialog();
+    const apiFactory = new ApiFactory();
+    if (mode == 'sandbox') {
+      try {
+        
+        const permissions = [
+          'ReadAccountsDetail',
+          'ReadBalances',
+          'ReadTransactionsCredits',
+          'ReadTransactionsDebits',
+          'ReadTransactionsDetail',
+        ];
+        setLoading(true);
+        setError(null);
+        const sandboxApiClient = apiFactory.createApiClient('sandbox');
+        const data = await sandboxApiClient.retrieveAccessToken(permissions); //here is data
+        console.log('Sandbox API 1 Data:', data);
+        if(way=='web'){
+          const data2=await sandboxApiClient.manualUserConsent()
+        showInputDialog()
+        
+      }
+      else{
+        const data2=await sandboxApiClient.userConsentProgammatically();
+        navigation.navigate('Accounts', {accountData: data2});
+      }
+      } catch (error) {
+        console.error('Error:', error);
+        setError('Failed to retrieve access token.');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      navigation.navigate('Accounts');
+    }
+    
+  };
+
+  const handleSubmit = async () => {
+    try {
+      
+      
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to retrieve access token.');
+    } finally {
+      setLoading(false);
+    }
+    hideInputDialog();
   };
 
   return (
